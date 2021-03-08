@@ -37,17 +37,17 @@
 </div>
 <div>
     <label for="absolutePath">Wprowadź ścieżkę absolutną z dysku(małe litery):</label>
-    <input pattern="" id="absolutePath" name="absolutePath">
+    <input pattern="^([a-zA-Z]\:|\\\\[^\/\\:*?<>|]+\\[^\/\\:*?<>|]+)(\\[^\/\\:*?<>|]+)+(\.[^\/\\:*?<>|]+)$" id="absolutePath" name="absolutePath">
     <input type="submit">
 </div>
 <div>
     <label for="absolutePathBig">Wprowadź ścieżkę absolutną z dysku:</label>
-    <input pattern="" id="absolutePathBig" name="absolutePathBig">
+    <input pattern="^([a-zA-Z]\:|\\\\[^\/\\:*?<>|]+\\[^\/\\:*?<>|]+)(\\[^\/\\:*?<>|]+)+(\.[^\/\\:*?<>|]+)$" id="absolutePathBig" name="absolutePathBig">
     <input type="submit">
 </div>
 <div>
     <label for="relativePath">Wprowadź ścieżkę relatywną z dysku:</label>
-    <input pattern="" id="relativePath" name="relativePath">
+    <input pattern="^(|((\\|/){1,2}\w+)\$?)((\\|/)(\w[\w ]*.*))$" id="relativePath" name="relativePath">
     <input type="submit">
 </div>
 <div>
