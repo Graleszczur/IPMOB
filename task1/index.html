@@ -5,6 +5,22 @@
     <title>Task 1</title>
 </head>
 <body>
-    
+<div>
+    <label for="email">Wprowadź email:</label>
+    <input type="email" id="email" name="email">
+    <input type="submit">
+</div>
+<div>
+    <label for="postalCode">Wprowadź kod pocztowy:</label>
+    <input pattern="\d{2}-\d{3}" id="postalCode" name="postalCode">
+    <input type="submit">
+</div>
+<div>
+    <label for="idNumber">Wprowadź numer i serię dowodu osobistego:</label>
+    <input pattern="[A-Z]{3}[0-9]{6}" id="idNumber" name="idNumber">
+    <input type="submit">
+</div>
+
+
 </body>
 </html>
