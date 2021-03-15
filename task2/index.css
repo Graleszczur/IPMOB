@@ -4,3 +4,6 @@ input:invalid {
 input:valid {
     border: 2px solid #00cc00;
 }
+input[type=submit] {
+    border: 2px solid #000000;
+}
