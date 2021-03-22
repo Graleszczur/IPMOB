@@ -117,11 +117,13 @@
         posY = mouseY - dragHoldY;
         posY = (posY < minY) ? minY : ((posY > maxY) ? maxY : posY);
 
-        bricks[dragIndex].x = posX;
-        bricks[dragIndex].y = posY;
+        if(collisionDetector(posX, posY)){
+            bricks[dragIndex].x = posX;
+            bricks[dragIndex].y = posY;
+            clearCanvas();
+            drawBricks();
+        }
 
-        clearCanvas();
-        drawBricks();
     }
 
     function mouseUp() {
@@ -153,8 +155,21 @@
 
     drawPlatform();
 
-    const collisionDetector = () => {
-
+    const collisionDetector = (x, y) => {
+        const length = bricks.length;
+        for (let i = 0; i < length; i++) {
+            if (Math.abs(x - bricks[i].x) < 100) {
+                if(Math.abs(y - bricks[i].y) < 100){
+                    return false;
+                }
+            }
+        }
+        if (Math.abs(x - platformX) < platformWidth) {
+            if(Math.abs(y - platformY) < platformHeight){
+                return false;
+            }
+        }
+        return true;
     }
 
 </script>
