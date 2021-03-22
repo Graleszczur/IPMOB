@@ -3,16 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Task 3</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-<canvas id="myCanvas" style="border:1px solid #d3d3d3;">
-    Your browser does not support the HTML canvas tag.
-</canvas>
+<div id="container">
+    <canvas id="myCanvas" style="border:1px solid #d3d3d3;">
+        Your browser does not support the HTML canvas tag.
+    </canvas>
+    <button id="addButton">Generuj klocek</button>
+</div>
+
 <script>
     let canvas = document.getElementById('myCanvas');
     let ctx = canvas.getContext('2d');
-    canvas.width = innerWidth * 0.8;
+    const btn = document.getElementById("request");
+    canvas.width = innerWidth;
     canvas.height = innerHeight - innerHeight * 0.01;
+
 </script>
 </body>
 </html>
