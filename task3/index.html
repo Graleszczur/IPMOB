@@ -19,6 +19,25 @@
     const btn = document.getElementById("request");
     canvas.width = innerWidth;
     canvas.height = innerHeight - innerHeight * 0.01;
+    const platformX = 5;
+    const platformY = innerHeight - innerHeight * 0.05;
+    const platformWidth = innerWidth * 0.75 -5;
+    const platformHeight = innerHeight * 0.1 -5;
+
+    const generateColor = () => {
+        return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," +
+            Math.floor(Math.random() * 255) + ")";
+    }
+
+    const drawPlatform = ()=> {
+        ctx.beginPath();
+        ctx.rect(platformX, platformY, platformWidth, platformHeight);
+        ctx.fillStyle = "#000000";
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    drawPlatform();
 
 </script>
 </body>
