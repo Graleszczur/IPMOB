@@ -5,6 +5,14 @@
     <title>Task 3</title>
 </head>
 <body>
-
+<canvas id="myCanvas" style="border:1px solid #d3d3d3;">
+    Your browser does not support the HTML canvas tag.
+</canvas>
+<script>
+    let canvas = document.getElementById('myCanvas');
+    let ctx = canvas.getContext('2d');
+    canvas.width = innerWidth * 0.8;
+    canvas.height = innerHeight - innerHeight * 0.01;
+</script>
 </body>
 </html>
