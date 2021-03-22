@@ -14,22 +14,136 @@
 </div>
 
 <script>
+    // przy implementacji sugerowałem się poniższym artykułem
+    // https://designconcept.webdev20.pl/articles/drag-and-drop-w-html5-canvas?fbclid=IwAR029R9VvjBfIaptP8llwJVT8HMrRZduKJvp33D3PpEQSstSH7lIO_LGat0
     let canvas = document.getElementById('myCanvas');
     let ctx = canvas.getContext('2d');
-    const btn = document.getElementById("request");
+    const addButton = document.getElementById("addButton");
     canvas.width = innerWidth;
     canvas.height = innerHeight - innerHeight * 0.01;
     const platformX = 5;
     const platformY = innerHeight - innerHeight * 0.05;
-    const platformWidth = innerWidth * 0.75 -5;
-    const platformHeight = innerHeight * 0.1 -5;
+    const platformWidth = innerWidth * 0.75 - 5;
+    const platformHeight = innerHeight * 0.1 - 5;
+    let bricks = [];
+    let drag = false;
+    let mouseX;
+    let mouseY;
+    let dragHoldX;
+    let dragHoldY;
 
+    class Brick {
+        constructor(x, y, size, color) {
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.color = color;
+        }
+    }
+
+    const clearCanvas = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    const drawBricks = () => {
+        const length = bricks.length;
+        for (let i = 0; i < length; i++) {
+            ctx.beginPath();
+            ctx.rect(bricks[i].x, bricks[i].y, bricks[i].size, bricks[i].size);
+            ctx.fillStyle = bricks[i].color;
+            ctx.fill();
+            ctx.closePath();
+        }
+        drawPlatform();
+    }
+
+    const addBrick = () => {
+        const x = canvas.width - canvas.width * 0.1;
+        const y = canvas.height * 0.5;
+        const size = 100;
+        const color = generateColor();
+        bricks.push(new Brick(x, y, size, color))
+        drawBricks();
+
+    }
+
+    addButton.addEventListener('touchstart', addBrick, false);
+    addButton.addEventListener("click", addBrick);
+
+    function inBrick(brick, mx, my) {
+        const imageData = ctx.getImageData(mx, my, 1, 1);
+        return imageData.data[3] > 0 && brick.color === "rgb(" + imageData.data[0] + "," + imageData.data[1] + "," + imageData.data[2] + ")";
+    }
+
+    function mouseDown(e) {
+        let i;
+        const len = bricks.length;
+        const bRect = canvas.getBoundingClientRect();
+        mouseX = (e.clientX - bRect.left);
+        mouseY = (e.clientY - bRect.top);
+        for (i = 0; i < len; i++) {
+            if (inBrick(bricks[i], mouseX, mouseY)) {
+                drag = true;
+                dragHoldX = mouseX - bricks[i].x;
+                dragHoldY = mouseY - bricks[i].y;
+                dragIndex = i;
+            }
+        }
+        if (drag) {
+            window.addEventListener("mousemove", mouseMove, false);
+            window.addEventListener("touchmove", mouseMove, false);
+        }
+        canvas.removeEventListener("mousedown", mouseDown, false);
+        canvas.removeEventListener("touchstart", mouseDown, false);
+        window.addEventListener("mouseup", mouseUp, false);
+        window.addEventListener("touchend", mouseUp, false);
+        return false;
+    }
+
+    function mouseMove(e) {
+        let posX, posY;
+        let size = bricks[dragIndex].r;
+        let minX = size;
+        let maxX = canvas.width - size;
+        let minY = size;
+        let maxY = canvas.height - size;
+
+        let bRect = canvas.getBoundingClientRect();
+        mouseX = (e.clientX - bRect.left);
+        mouseY = (e.clientY - bRect.top);
+
+        posX = mouseX - dragHoldX;
+        posX = (posX < minX) ? minX : ((posX > maxX) ? maxX : posX);
+        posY = mouseY - dragHoldY;
+        posY = (posY < minY) ? minY : ((posY > maxY) ? maxY : posY);
+
+        bricks[dragIndex].x = posX;
+        bricks[dragIndex].y = posY;
+
+        clearCanvas();
+        drawBricks();
+    }
+
+    function mouseUp() {
+        canvas.addEventListener("mousedown", mouseDown, false);
+        canvas.addEventListener('touchstart', mouseDown, false);
+        window.removeEventListener("mouseup", mouseUp, false);
+        canvas.removeEventListener('touchend', mouseUp, false);
+        if (drag) {
+            drag = false;
+            window.removeEventListener("mousemove", mouseMove, false);
+            window.removeEventListener("touchmove", mouseMove, false);
+        }
+    }
+
+    canvas.addEventListener("mousedown", mouseDown, false);
+    canvas.addEventListener('touchstart', mouseDown, false);
     const generateColor = () => {
         return "rgb(" + Math.floor(Math.random() * 255) + "," + Math.floor(Math.random() * 255) + "," +
             Math.floor(Math.random() * 255) + ")";
     }
 
-    const drawPlatform = ()=> {
+    const drawPlatform = () => {
         ctx.beginPath();
         ctx.rect(platformX, platformY, platformWidth, platformHeight);
         ctx.fillStyle = "#000000";
@@ -38,6 +152,10 @@
     }
 
     drawPlatform();
+
+    const collisionDetector = () => {
+
+    }
 
 </script>
 </body>
