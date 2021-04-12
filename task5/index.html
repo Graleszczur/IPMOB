@@ -20,7 +20,7 @@
         </div>
         <div>
             <label for="phoneNumberInput">Numer telefonu</label>
-            <input type="text" id="phoneNumberInput">
+            <input required pattern="^(?:\(?\?)?(?:[-\.\(\)\s]*(\d)){9}\)?$" type="text" id="phoneNumberInput">
         </div>
         <button id="addButton">Dodaj</button>
     </form>
