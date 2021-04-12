@@ -3,38 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Task 5</title>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body onload="initDatabase()">
 
-<div>
+<div class="form-style-6">
     <form id="addForm">
         <p>Dodaj klienta</p>
         <div>
             <label for="nameInput">Imię</label>
-            <input id="nameInput">
+            <input type="text" id="nameInput">
         </div>
         <div>
             <label for="surnameInput">Nazwisko</label>
-            <input id="surnameInput">
+            <input type="text" id="surnameInput">
         </div>
         <div>
             <label for="phoneNumberInput">Numer telefonu</label>
-            <input id="phoneNumberInput">
+            <input type="text" id="phoneNumberInput">
         </div>
         <button id="addButton">Dodaj</button>
     </form>
 </div>
 
-<div>
+<div class="form-style-6">
     <form id="deleteForm">
         <p>Usuń klienta</p>
-        <label>ID klienta</label>
-        <input id="idForDeletion">
+        <label for="idForDeletion">ID klienta</label>
+        <input type="text" id="idForDeletion">
         <button id="deleteButton">Usuń</button>
     </form>
 </div>
 
-<table id="customers-table">
+<table id="customers-table" class="styled-table">
     <thead>
     <tr>
         <th>ID</th>
