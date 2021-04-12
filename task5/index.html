@@ -40,6 +40,47 @@
         }
     </script>
 </head>
-<body>
+<body onload="initDatabase()">
+
+    <div>
+        <form id="addForm">
+            <p>Dodaj klienta</p>
+            <div>
+                <label>Imię</label>
+                <input id="nameInput">
+            </div>
+            <div>
+                <label>Nazwisko</label>
+                <input id="surnameInput">
+            </div>
+            <div>
+                <label>Numer telefonu</label>
+                <input id="phoneNumberInput">
+            </div>
+            <button id="addButton">Dodaj</button>
+    </form>
+    </div>
+
+    <div>
+        <form id="deleteForm">
+            <p>Usuń klienta</p>
+            <label>ID klienta</label>
+            <input id="idForDeletion">
+            <button id="deleteButton">Usuń</button>
+        </form>
+    </div>
+
+    <table id="customers-table">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Numer telefonu</th>
+        </tr>
+        </thead>
+        <tbody id="customers-table-body">
+        </tbody>
+    </table>
 </body>
 </html>
