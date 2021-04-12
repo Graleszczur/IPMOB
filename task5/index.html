@@ -3,42 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Task 5</title>
-    <script>
-        // In the following line, you should include the prefixes of implementations you want to test.
-        window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        // DON'T use "var indexedDB = ..." if you're not in a function.
-        // Moreover, you may need references to some window.IDB* objects:
-        window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
-        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
-        // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
-        if (!window.indexedDB) {
-            console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
-        }
-
-        function initDatabase() {
-
-            const request = window.indexedDB.open("MyTestDatabase", 3);
-            request.onerror = function (event) {
-                console.log("Error occurred during database setup");
-            };
-            request.onsuccess = function (event) {
-                const db = event.target.result;
-                db.onerror = function (event) {
-                    console.log("Error has occurred: " + event.target.errorCode);
-                };
-
-            };
-            request.onupgradeneeded = function (event) {
-                const db = event.target.result;
-                const objectStore = db.createObjectStore("customers", {keyPath: "id"});
-                objectStore.createIndex("name", "name", {unique: false});
-                objectStore.createIndex("surname", "surname", {unique: false});
-                objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
-                objectStore.transaction.oncomplete = function (event) {
-                };
-            };
-        }
-    </script>
 </head>
 <body onload="initDatabase()">
 
@@ -46,18 +10,18 @@
         <form id="addForm">
             <p>Dodaj klienta</p>
             <div>
-                <label>Imię</label>
+                <label for="nameInput">Imię</label>
                 <input id="nameInput">
             </div>
             <div>
-                <label>Nazwisko</label>
+                <label for="surnameInput">Nazwisko</label>
                 <input id="surnameInput">
             </div>
             <div>
-                <label>Numer telefonu</label>
+                <label for="phoneNumberInput">Numer telefonu</label>
                 <input id="phoneNumberInput">
             </div>
-            <button id="addButton">Dodaj</button>
+            <input id="addButton" type="submit">
     </form>
     </div>
 
@@ -82,5 +46,88 @@
         <tbody id="customers-table-body">
         </tbody>
     </table>
+    <script>
+        // In the following line, you should include the prefixes of implementations you want to test.
+        window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        // DON'T use "var indexedDB = ..." if you're not in a function.
+        // Moreover, you may need references to some window.IDB* objects:
+        window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+        // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+        if (!window.indexedDB) {
+            console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+        }
+
+        function initDatabase() {
+
+            const request = window.indexedDB.open("MyTestDatabase", 3);
+            request.onerror = function (event) {
+                console.log("Error occurred during database setup");
+            };
+            request.onsuccess = function (event) {
+                db = event.target.result;
+                db.onerror = function (event) {
+                    console.log("Error has occurred: " + event.target.errorCode);
+                };
+
+            };
+            request.onupgradeneeded = function (event) {
+                const db = event.target.result;
+                const objectStore = db.createObjectStore("customers", {keyPath: "id"});
+                objectStore.createIndex("name", "name", {unique: false});
+                objectStore.createIndex("surname", "surname", {unique: false});
+                objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
+                objectStore.transaction.oncomplete = function (event) {
+                };
+            };
+        }
+
+        function updateTableBody(){
+            document.getElementById("customers-table-body").innerHTML = "";
+            const request = db.transaction("customers").objectStore("customers").openCursor();
+            request.onerror = function(event){
+                console.log(event);
+            };
+            request.onsuccess = function(event){
+                const cursor = event.target.result;
+                if(cursor) {
+                    document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
+                        + cursor.value.name + "</td><td>"
+                        + cursor.value.surname + "</td><td>"
+                        + cursor.value.phoneNumber + "</td></tr>";
+                    cursor.continue();
+                }
+            };
+        }
+
+        document.getElementById('addButton').onclick = function(e) {
+            const name = document.getElementById('nameInput').value;
+            const surname = document.getElementById('surnameInput').value;
+            const phoneNumber = document.getElementById('phoneNumberInput').value;
+            const customerID = 1;
+
+            const customerEntry = {
+                id: customerID,
+                name: name,
+                surname: surname,
+                phoneNumber: phoneNumber
+            }
+
+            let transaction = db.transaction(["customers"], "readwrite");
+            transaction.oncomplete = function(event) {
+                console.log("Transaction successful");
+            };
+            transaction.onerror = function(event){
+                console.log("Error during transaction");
+            };
+            const customersObjectStore = transaction.objectStore("customers");
+            const request = customersObjectStore.add(customerEntry);
+            request.onsuccess = function(event){
+                console.log("Customer entry added to database!");
+            };
+            updateTableBody();
+        }
+
+    </script>
 </body>
 </html>
