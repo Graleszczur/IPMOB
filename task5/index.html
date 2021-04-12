@@ -14,6 +14,30 @@
         if (!window.indexedDB) {
             console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
         }
+
+        function initDatabase() {
+
+            const request = window.indexedDB.open("MyTestDatabase", 3);
+            request.onerror = function (event) {
+                console.log("Error occurred during database setup");
+            };
+            request.onsuccess = function (event) {
+                const db = event.target.result;
+                db.onerror = function (event) {
+                    console.log("Error has occurred: " + event.target.errorCode);
+                };
+
+            };
+            request.onupgradeneeded = function (event) {
+                const db = event.target.result;
+                const objectStore = db.createObjectStore("customers", {keyPath: "id"});
+                objectStore.createIndex("name", "name", {unique: false});
+                objectStore.createIndex("surname", "surname", {unique: false});
+                objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
+                objectStore.transaction.oncomplete = function (event) {
+                };
+            };
+        }
     </script>
 </head>
 <body>
