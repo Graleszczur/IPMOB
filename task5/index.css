@@ -107,3 +107,9 @@
 .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
 }
+.form-style-6 input:invalid {
+    border-color: #FF0000;
+}
+.form-style-6 input:valid {
+    border-color: #00cc00;
+}
