@@ -28,7 +28,7 @@
         </div>
         <div>
             <label for="IDInput">Numer i seria dowodu</label>
-            <input required type="text" pattern="[A-Z]{3}[0-9]{6}"  id="IDInput">
+            <input required type="text" pattern="[A-Z]{3}[0-9]{6}" id="IDInput">
         </div>
         <div>
             <label for="addressInput">Adres</label>
@@ -52,7 +52,6 @@
         <p>Usuń klienta</p>
         <label for="idForDeletion">ID klienta</label>
         <input type="text" id="idForDeletion">
-        <button id="deleteButton">Usuń</button>
     </form>
 </div>
 
@@ -131,7 +130,15 @@
                     + cursor.value.idNumber + "</td><td>"
                     + cursor.value.address + "</td><td>"
                     + cursor.value.city + "</td><td>"
-                    + cursor.value.postalCode + "</td></tr>";
+                    + cursor.value.postalCode +
+                    "<button style='margin-left: 10px' id=\"deleteButton\" value=\"" + cursor.key + "\">Usuń rekord</button>" +
+                    "</td></tr>";
+                document.getElementById('deleteButton').onclick = function (e) {
+                    const idToDelete = parseInt(document.getElementById('deleteButton').value);
+                    const request = db.transaction(["customers"], "readwrite").objectStore("customers")
+                        .delete(idToDelete);
+                    updateTableBody();
+                }
                 cursor.continue();
             }
         };
@@ -173,14 +180,7 @@
         updateTableBody();
     }
 
-    document.getElementById('deleteButton').onclick = function (e) {
-        const idToDelete = document.getElementById('idForDeletion').value;
-        const request = db.transaction(["customers"], "readwrite").objectStore("customers").delete(parseInt(idToDelete));
-        request.onsuccess = function (event) {
-            console.log("Customer deleted");
-        }
-        updateTableBody();
-    }
+
 </script>
 </body>
 </html>
