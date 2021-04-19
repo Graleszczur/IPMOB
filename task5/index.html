@@ -12,16 +12,37 @@
         <p>Dodaj klienta</p>
         <div>
             <label for="nameInput">Imię</label>
-            <input type="text" id="nameInput">
+            <input required type="text" id="nameInput">
         </div>
         <div>
             <label for="surnameInput">Nazwisko</label>
-            <input type="text" id="surnameInput">
+            <input required type="text" id="surnameInput">
         </div>
         <div>
             <label for="phoneNumberInput">Numer telefonu</label>
             <input required pattern="^(?:\(?\?)?(?:[-\.\(\)\s]*(\d)){9}\)?$" type="text" id="phoneNumberInput">
         </div>
+        <div>
+            <label for="emailInput">Adres email</label>
+            <input required type="email" id="emailInput">
+        </div>
+        <div>
+            <label for="IDInput">Numer i seria dowodu</label>
+            <input required type="text" pattern="[A-Z]{3}[0-9]{6}"  id="IDInput">
+        </div>
+        <div>
+            <label for="addressInput">Adres</label>
+            <input required type="text" id="addressInput">
+        </div>
+        <div>
+            <label for="cityInput">Miasto</label>
+            <input required type="text" id="cityInput">
+        </div>
+        <div>
+            <label for="postalCodeInput">Kod pocztowy</label>
+            <input required type="text" id="postalCodeInput" pattern="\d{2}-\d{3}">
+        </div>
+
         <button id="addButton">Dodaj</button>
     </form>
 </div>
@@ -42,6 +63,11 @@
         <th>Imię</th>
         <th>Nazwisko</th>
         <th>Numer telefonu</th>
+        <th>Email</th>
+        <th>Numer dowodu</th>
+        <th>Adres</th>
+        <th>Miasto</th>
+        <th>Kod pocztowy</th>
     </tr>
     </thead>
     <tbody id="customers-table-body">
@@ -78,6 +104,11 @@
             objectStore.createIndex("name", "name", {unique: false});
             objectStore.createIndex("surname", "surname", {unique: false});
             objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
+            objectStore.createIndex("email", "email", {unique: true});
+            objectStore.createIndex("idNumber", "idNumber", {unique: true});
+            objectStore.createIndex("address", "address", {unique: false});
+            objectStore.createIndex("city", "city", {unique: false});
+            objectStore.createIndex("postalCode", "postalCode", {unique: false});
             objectStore.transaction.oncomplete = function (event) {
             };
         };
@@ -95,7 +126,12 @@
                 document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
                     + cursor.value.name + "</td><td>"
                     + cursor.value.surname + "</td><td>"
-                    + cursor.value.phoneNumber + "</td></tr>";
+                    + cursor.value.phoneNumber + "</td><td>"
+                    + cursor.value.email + "</td><td>"
+                    + cursor.value.idNumber + "</td><td>"
+                    + cursor.value.address + "</td><td>"
+                    + cursor.value.city + "</td><td>"
+                    + cursor.value.postalCode + "</td></tr>";
                 cursor.continue();
             }
         };
@@ -105,11 +141,21 @@
         const name = document.getElementById('nameInput').value;
         const surname = document.getElementById('surnameInput').value;
         const phoneNumber = document.getElementById('phoneNumberInput').value;
+        const email = document.getElementById('emailInput').value;
+        const idNumber = document.getElementById('IDInput').value;
+        const address = document.getElementById('addressInput').value;
+        const city = document.getElementById('cityInput').value;
+        const postalCode = document.getElementById('postalCode').value;
 
         const customerEntry = {
             name: name,
             surname: surname,
-            phoneNumber: phoneNumber
+            phoneNumber: phoneNumber,
+            email: email,
+            idNumber: idNumber,
+            address: address,
+            city: city,
+            postalCode: postalCode
         }
 
         let transaction = db.transaction(["customers"], "readwrite");
