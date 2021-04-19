@@ -189,7 +189,7 @@
         request.onsuccess = function (event) {
             const cursor = event.target.result;
             if (cursor) {
-                if((
+                if ((
                     cursor.value.name.toLowerCase().includes(keyword.toLowerCase()) ||
                     cursor.value.surname.toLowerCase().includes(keyword.toLowerCase()) ||
                     cursor.value.phoneNumber.toLowerCase().includes(keyword.toLowerCase()) ||
@@ -197,28 +197,27 @@
                     cursor.value.idNumber.toLowerCase().includes(keyword.toLowerCase()) ||
                     cursor.value.address.toLowerCase().includes(keyword.toLowerCase()) ||
                     cursor.value.city.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))){
+                    cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))) {
                     console.log("addind")
-                document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
-                    + cursor.value.name + "</td><td>"
-                    + cursor.value.surname + "</td><td>"
-                    + cursor.value.phoneNumber + "</td><td>"
-                    + cursor.value.email + "</td><td>"
-                    + cursor.value.idNumber + "</td><td>"
-                    + cursor.value.address + "</td><td>"
-                    + cursor.value.city + "</td><td>"
-                    + cursor.value.postalCode +
-                    "<button onclick='deleteRecord(\"" + cursor.key + "\")' style='margin-left: 10px' id=\"" + cursor.key + "\" >Usuń rekord</button>" +
-                    "</td></tr>";
+                    document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
+                        + cursor.value.name + "</td><td>"
+                        + cursor.value.surname + "</td><td>"
+                        + cursor.value.phoneNumber + "</td><td>"
+                        + cursor.value.email + "</td><td>"
+                        + cursor.value.idNumber + "</td><td>"
+                        + cursor.value.address + "</td><td>"
+                        + cursor.value.city + "</td><td>"
+                        + cursor.value.postalCode +
+                        "<button onclick='deleteRecord(\"" + cursor.key + "\")' style='margin-left: 10px' id=\"" + cursor.key + "\" >Usuń rekord</button>" +
+                        "</td></tr>";
 
-                cursor.continue();
-            }
+                    cursor.continue();
+                }
             }
         };
-
     }
 
-    function deleteRecord(idToDelete){
+    function deleteRecord(idToDelete) {
         const request = db.transaction(["customers"], "readwrite").objectStore("customers")
             .delete(parseInt(idToDelete));
         updateTableBody();
