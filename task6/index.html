@@ -178,11 +178,11 @@
     }
 
     document.getElementById('searchButton').onclick = function (e) {
-        let keyword = document.getElementById('keyword').value;
-        if (keyword == null) {
-            keyword = "";
+        let word = document.getElementById('keyword').value;
+        if (word == null) {
+            word = "";
         }
-        let words = keyword.split(' ');
+        let words = word.split(' ');
         document.getElementById("customers-table-body").innerHTML = "";
         const request = db.transaction("customers").objectStore("customers").openCursor();
         request.onerror = function (event) {
@@ -191,30 +191,33 @@
         request.onsuccess = function (event) {
             const cursor = event.target.result;
             if (cursor) {
-                if ((
-                    cursor.value.name.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.surname.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.phoneNumber.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.email.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.idNumber.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.address.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.city.toLowerCase().includes(keyword.toLowerCase()) ||
-                    cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))) {
+                words.forEach(function(keyword){
 
-                    document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
-                        + cursor.value.name + "</td><td>"
-                        + cursor.value.surname + "</td><td>"
-                        + cursor.value.phoneNumber + "</td><td>"
-                        + cursor.value.email + "</td><td>"
-                        + cursor.value.idNumber + "</td><td>"
-                        + cursor.value.address + "</td><td>"
-                        + cursor.value.city + "</td><td>"
-                        + cursor.value.postalCode +
-                        "<button onclick='deleteRecord(\"" + cursor.key + "\")' style='margin-left: 10px' id=\"" + cursor.key + "\" >Usuń rekord</button>" +
-                        "</td></tr>";
+                    if ((
+                        cursor.value.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.surname.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.phoneNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.email.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.idNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.address.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.city.toLowerCase().includes(keyword.toLowerCase()) ||
+                        cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))) {
 
-                    cursor.continue();
-                }
+                        document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
+                            + cursor.value.name + "</td><td>"
+                            + cursor.value.surname + "</td><td>"
+                            + cursor.value.phoneNumber + "</td><td>"
+                            + cursor.value.email + "</td><td>"
+                            + cursor.value.idNumber + "</td><td>"
+                            + cursor.value.address + "</td><td>"
+                            + cursor.value.city + "</td><td>"
+                            + cursor.value.postalCode +
+                            "<button onclick='deleteRecord(\"" + cursor.key + "\")' style='margin-left: 10px' id=\"" + cursor.key + "\" >Usuń rekord</button>" +
+                            "</td></tr>";
+
+                        cursor.continue();
+                    }
+                })
             }
         };
     }
