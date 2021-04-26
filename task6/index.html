@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task 5</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body onload="initDatabase()">
+
+<div class="form-style-6">
+    <form id="addForm">
+        <p>Dodaj klienta</p>
+        <div>
+            <label for="nameInput">Imię</label>
+            <input required type="text" id="nameInput">
+        </div>
+        <div>
+            <label for="surnameInput">Nazwisko</label>
+            <input required type="text" id="surnameInput">
+        </div>
+        <div>
+            <label for="phoneNumberInput">Numer telefonu</label>
+            <input required pattern="^(?:\(?\?)?(?:[-\.\(\)\s]*(\d)){9}\)?$" type="text" id="phoneNumberInput">
+        </div>
+        <div>
+            <label for="emailInput">Adres email</label>
+            <input required type="email" id="emailInput">
+        </div>
+        <div>
+            <label for="IDInput">Numer i seria dowodu</label>
+            <input required type="text" pattern="[A-Z]{3}[0-9]{6}" id="IDInput">
+        </div>
+        <div>
+            <label for="addressInput">Adres</label>
+            <input required type="text" id="addressInput">
+        </div>
+        <div>
+            <label for="cityInput">Miasto</label>
+            <input required type="text" id="cityInput">
+        </div>
+        <div>
+            <label for="postalCodeInput">Kod pocztowy</label>
+            <input required type="text" id="postalCodeInput" pattern="\d{2}-\d{3}">
+        </div>
+
+        <button id="addButton">Dodaj</button>
+    </form>
+</div>
+
+<div class="form-style-6">
+    <form id="searchForm">
+        <p>Wyszukaj</p>
+        <label for="keyword">Wpisz słowo kluczowe</label>
+        <input type="text" id="keyword">
+        <button id="searchButton">Wyszukaj</button>
+    </form>
+</div>
+
+<table id="customers-table" class="styled-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Numer telefonu</th>
+        <th>Email</th>
+        <th>Numer dowodu</th>
+        <th>Adres</th>
+        <th>Miasto</th>
+        <th>Kod pocztowy</th>
+    </tr>
+    </thead>
+    <tbody id="customers-table-body">
+    </tbody>
+</table>
+<script>
+    // In the following line, you should include the prefixes of implementations you want to test.
+    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    // DON'T use "var indexedDB = ..." if you're not in a function.
+    // Moreover, you may need references to some window.IDB* objects:
+    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+    // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+    if (!window.indexedDB) {
+        console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+    }
+
+    function initDatabase() {
+
+        const request = window.indexedDB.open("MyTestDatabase", 3);
+        request.onerror = function (event) {
+            console.log("Error occurred during database setup");
+        };
+        request.onsuccess = function (event) {
+            db = event.target.result;
+            db.onerror = function (event) {
+                console.log("Error has occurred: " + event.target.errorCode);
+            };
+            updateTableBody();
+        };
+        request.onupgradeneeded = function (event) {
+            const db = event.target.result;
+            const objectStore = db.createObjectStore("customers", {keyPath: "id", autoIncrement: true});
+            objectStore.createIndex("name", "name", {unique: false});
+            objectStore.createIndex("surname", "surname", {unique: false});
+            objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
+            objectStore.createIndex("email", "email", {unique: true});
+            objectStore.createIndex("idNumber", "idNumber", {unique: true});
+            objectStore.createIndex("address", "address", {unique: false});
+            objectStore.createIndex("city", "city", {unique: false});
+            objectStore.createIndex("postalCode", "postalCode", {unique: false});
+            objectStore.transaction.oncomplete = function (event) {
+            };
+        };
+    }
+
+    function updateTableBody() {
+        document.getElementById("customers-table-body").innerHTML = "";
+        const request = db.transaction("customers").objectStore("customers").openCursor();
+        request.onerror = function (event) {
+            console.log(event);
+        };
+        request.onsuccess = function (event) {
+            const cursor = event.target.result;
+            if (cursor) {
+                document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
+                    + cursor.value.name + "</td><td>"
+                    + cursor.value.surname + "</td><td>"
+                    + cursor.value.phoneNumber + "</td><td>"
+                    + cursor.value.email + "</td><td>"
+                    + cursor.value.idNumber + "</td><td>"
+                    + cursor.value.address + "</td><td>"
+                    + cursor.value.city + "</td><td>"
+                    + cursor.value.postalCode +
+                    "<button onclick='deleteRecord(\"" + cursor.key + "\")' style='margin-left: 10px' id=\"" + cursor.key + "\" >Usuń rekord</button>" +
+                    "</td></tr>";
+
+                cursor.continue();
+            }
+        };
+    }
+
+    document.getElementById('addButton').onclick = function (e) {
+        const name = document.getElementById('nameInput').value;
+        const surname = document.getElementById('surnameInput').value;
+        const phoneNumber = document.getElementById('phoneNumberInput').value;
+        const email = document.getElementById('emailInput').value;
+        const idNumber = document.getElementById('IDInput').value;
+        const address = document.getElementById('addressInput').value;
+        const city = document.getElementById('cityInput').value;
+        const postalCode = document.getElementById('postalCodeInput').value;
+
+        const customerEntry = {
+            name: name,
+            surname: surname,
+            phoneNumber: phoneNumber,
+            email: email,
+            idNumber: idNumber,
+            address: address,
+            city: city,
+            postalCode: postalCode
+        }
+
+        let transaction = db.transaction(["customers"], "readwrite");
+        transaction.oncomplete = function (event) {
+            console.log("Transaction successful");
+        };
+        transaction.onerror = function (event) {
+            console.log("Error during transaction");
+        };
+        const customersObjectStore = transaction.objectStore("customers");
+        const request = customersObjectStore.add(customerEntry);
+        request.onsuccess = function (event) {
+            console.log("Customer entry added to database!");
+        };
+        updateTableBody();
+    }
+
+    document.getElementById('searchButton').onclick = function (e) {
+        let keyword = document.getElementById('keyword').value;
+        if (keyword == null) {
+            keyword = "";
+        }
+        document.getElementById("customers-table-body").innerHTML = "";
+        const request = db.transaction("customers").objectStore("customers").openCursor();
+        request.onerror = function (event) {
+            console.log(event);
+        };
+        request.onsuccess = function (event) {
+            const cursor = event.target.result;
+            if (cursor) {
+                if ((
+                    cursor.value.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.surname.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.phoneNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.email.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.idNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.address.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.city.toLowerCase().includes(keyword.toLowerCase()) ||
+                    cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))) {
+                    console.log("addind")
+                    document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
+                        + cursor.value.name + "</td><td>"
+                        + cursor.value.surname + "</td><td>"
+                        + cursor.value.phoneNumber + "</td><td>"
+                        + cursor.value.email + "</td><td>"
+                        + cursor.value.idNumber + "</td><td>"
+                        + cursor.value.address + "</td><td>"
+                        + cursor.value.city + "</td><td>"
+                        + cursor.value.postalCode +
+                        "<button onclick='deleteRecord(\"" + cursor.key + "\")' style='margin-left: 10px' id=\"" + cursor.key + "\" >Usuń rekord</button>" +
+                        "</td></tr>";
+
+                    cursor.continue();
+                }
+            }
+        };
+    }
+
+    function deleteRecord(idToDelete) {
+        const request = db.transaction(["customers"], "readwrite").objectStore("customers")
+            .delete(parseInt(idToDelete));
+        updateTableBody();
+    }
+
+
+</script>
+</body>
+</html>
