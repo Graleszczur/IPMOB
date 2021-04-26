@@ -42,8 +42,9 @@
             <label for="postalCodeInput">Kod pocztowy</label>
             <input required type="text" id="postalCodeInput" pattern="\d{2}-\d{3}">
         </div>
-
+        <button id="randomButton">Wygeneruj dane</button>
         <button id="addButton">Dodaj</button>
+
     </form>
 </div>
 
@@ -181,6 +182,7 @@
         if (keyword == null) {
             keyword = "";
         }
+        let words = keyword.split(' ');
         document.getElementById("customers-table-body").innerHTML = "";
         const request = db.transaction("customers").objectStore("customers").openCursor();
         request.onerror = function (event) {
@@ -198,7 +200,7 @@
                     cursor.value.address.toLowerCase().includes(keyword.toLowerCase()) ||
                     cursor.value.city.toLowerCase().includes(keyword.toLowerCase()) ||
                     cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))) {
-                    console.log("addind")
+
                     document.getElementById("customers-table-body").innerHTML += "<tr><td>" + cursor.key + "</td><td>"
                         + cursor.value.name + "</td><td>"
                         + cursor.value.surname + "</td><td>"
@@ -215,6 +217,21 @@
                 }
             }
         };
+    }
+    function randomString(arr) {
+        let randomIndex = Math.floor(Math.random() * arr.length);
+        return arr[randomIndex];
+    }
+    document.getElementById('randomButton').onclick = function(e) {
+        document.getElementById("nameInput").value = randomString(['Bartosz', 'Maciej', 'Jan', 'Paweł']);
+        document.getElementById("surnameInput").value = randomString(['Kowalski', 'Nowak', 'Cichy', 'Wawelski']);
+        document.getElementById("emailInput").value = Math.random().toString(36).substring(2, 5) + Math.random().toString(36).substring(2, 5) + '@gmail.com';
+        document.getElementById("addressInput").value = randomString(['Wilcza 2', "Piłsudzkiego 12", "Wolskiego 4", "Pabianicka 144"]);
+        document.getElementById("cityInput").value = randomString(['Warszawa', 'Kraków', 'Łódź', 'Wrocław']);
+        document.getElementById("postalCodeInput").value = (Math.floor(Math.random() * 89 + 10) + '-' + Math.floor(Math.random() * 899 + 100)).toString();
+        document.getElementById("phoneNumberInput").value = Math.floor(Math.random() * 899 + 100).toString() + Math.floor(Math.random() * 899 + 100).toString() + Math.floor(Math.random() * 899 + 100).toString();
+        document.getElementById("IDInput").value = randomString(['ABC123456', 'BCA123456', 'AAA123456', 'BBB123456', 'AWC123456', 'ACC123456', 'AFG123456', 'AFH123456',
+        'ADG123456', 'WQQ123456']);
     }
 
     function deleteRecord(idToDelete) {
