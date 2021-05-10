@@ -113,3 +113,12 @@
 .form-style-6 input:valid {
     border-color: #00cc00;
 }
+
+#imageForFilter {
+    width: 350px;
+    height: 350px;
+    position: relative;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS6AKJcsYuewL-0YWaVC89vBnjy5W8gXdl3iZwLinBrGFzY6UmkKI9_iJNnSAP_U7o96RA&usqp=CAU");
+    background-position: center;
+    background-size: cover;
+}

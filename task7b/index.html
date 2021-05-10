@@ -205,11 +205,11 @@
                     postalCode: postalCode
                 }
                 worker.postMessage(JSON.stringify(entry));
-                worker.addEventListener('message', handleMessageFromWorker);
+                worker.addEventListener('message', handleMessage);
             }
 
-            function handleMessageFromWorker(e) {
-                result = JSON.parse(e.data);
+            function handleMessage(e) {
+                let result = JSON.parse(e.data);
                 document.getElementById("nameInput").value = result['name'];
                 document.getElementById("surnameInput").value = result['surname'];
                 document.getElementById("emailInput").value = result['email'];
@@ -233,7 +233,18 @@
                 }
                 const worker = new Worker('colorFilterWorker.js');
                 worker.postMessage(JSON.stringify(entry));
+                worker.addEventListener('message', handleColorFilterMessage);
             }
+
+            function handleColorFilterMessage(e) {
+                let result = JSON.parse(e.data);
+                let imageURL = document.getElementById('filterImage').value;
+                let style = `linear-gradient(0deg,rgba(${result.R},${result.G},${result.B},0.50),
+                rgba(${result.R},${result.G},${result.B},0.50)), url('${imageURL}')`;
+                document.getElementById('imageForFilter').style['background'] = style;
+                document.getElementById('imageForFilter').style['backgroundSize'] = 'cover';
+            }
+
 
             function updateTableBody() {
                 document.getElementById("customers-table-body").innerHTML = "";
@@ -332,6 +343,8 @@
     <button id="searchButton">Wyszukaj</button>
 </div>
 
+<div id="imageForFilter">
+</div>
 
 <table id="customers-table" class="styled-table">
     <thead>

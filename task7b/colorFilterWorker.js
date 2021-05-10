@@ -34,12 +34,12 @@ onmessage = function (e) {
         sum += calculateWordValue(request[key]);
     })
     const R = sum % 255;
-    const new_data = {
+    const filter = {
         R: R,
         G: 255 - (sum % 255),
         B: (0.5 * R > 125) ? 99 : 199
     }
-    self.postMessage(JSON.stringify(new_data));
+    self.postMessage(JSON.stringify(filter));
 
     function calculateWordValue(word) {
         let tempSum = 0;
