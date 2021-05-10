@@ -220,6 +220,21 @@
                 document.getElementById("IDInput").value = result['id_card'];
             }
 
+            document.getElementById('useColorWorker').onclick = function triggerColorFilter(e) {
+                const entry = {
+                    name: document.getElementById('nameInput').value,
+                    surname: document.getElementById('surnameInput').value,
+                    phoneNumber: document.getElementById('phoneNumberInput').value,
+                    email: document.getElementById('emailInput').value,
+                    idNumber: document.getElementById('IDInput').value,
+                    address: document.getElementById('addressInput').value,
+                    city: document.getElementById('cityInput').value,
+                    postalCode: document.getElementById('postalCodeInput').value
+                }
+                const worker = new Worker('colorFilterWorker.js');
+                worker.postMessage(JSON.stringify(entry));
+            }
+
             function updateTableBody() {
                 document.getElementById("customers-table-body").innerHTML = "";
                 let request = db.transaction("customers").objectStore("customers").openCursor();
