@@ -239,10 +239,18 @@
             function handleColorFilterMessage(e) {
                 let result = JSON.parse(e.data);
                 let imageURL = document.getElementById('filterImage').value;
-                let style = `linear-gradient(0deg,rgba(${result.R},${result.G},${result.B},0.50),
-                rgba(${result.R},${result.G},${result.B},0.50)), url('${imageURL}')`;
-                document.getElementById('imageForFilter').style['background'] = style;
-                document.getElementById('imageForFilter').style['backgroundSize'] = 'cover';
+                let canvas = document.getElementById('myCanvas');
+                let ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let image = new Image();
+                image.src = imageURL;
+                image.onload = function() {
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'rgb(' + result.R +
+                        "," + result.G + "," + result.B + ", 0.50)";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                }
+
             }
 
 
@@ -322,7 +330,6 @@
             <input required type="text" id="postalCodeInput" pattern="\d{2}-\d{3}">
         </div>
         <button id="generateButton">Wygeneruj dane</button>
-        <button type="submit" id="addButton">Dodaj</button>
     </form>
 </div>
 
@@ -335,6 +342,7 @@
         <input id="filterImage">
     </div>
     <button id="useColorWorker">Użyj workera filtra</button>
+    <button id="addButton">Dodaj rekord ze zdjęciem</button>
 </div>
 
 <div class="form-style-6">
@@ -344,6 +352,9 @@
 </div>
 
 <div id="imageForFilter">
+    <canvas id="myCanvas" style="height: 100px; width: 100px;">
+
+    </canvas>
 </div>
 
 <table id="customers-table" class="styled-table">
