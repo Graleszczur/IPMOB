@@ -40,12 +40,14 @@
                 objectStore.createIndex("address", "address", {unique: false});
                 objectStore.createIndex("city", "city", {unique: false});
                 objectStore.createIndex("postalCode", "postalCode", {unique: false});
+                objectStore.createIndex("image", "image", {unique: false});
                 objectStore.transaction.oncomplete = function (event) {
                 };
             };
 
             document.getElementById('addClientForm').onsubmit = function (e) {
                 e.preventDefault();
+                document.getElementById('useColorWorker').click();
                 let customerID = document.getElementById('recordIDinput').value;
                 const name = document.getElementById('nameInput').value;
                 const surname = document.getElementById('surnameInput').value;
@@ -93,6 +95,8 @@
                         }
                     };
                 } else {
+                    let canvas = document.getElementById("myCanvas");
+                    let canvasImage = canvas.toDataURL('image/jpeg').replace('data:image/jpeg;base64,', '');
                     const customerEntry = {
                         name: name,
                         surname: surname,
@@ -101,7 +105,8 @@
                         idNumber: idNumber,
                         address: address,
                         city: city,
-                        postalCode: postalCode
+                        postalCode: postalCode,
+                        image: canvasImage
                     }
                     let transaction = db.transaction(["customers"], "readwrite");
                     transaction.oncomplete = function (event) {
@@ -132,6 +137,10 @@
                     cursor = event.target.result;
 
                     if (cursor) {
+                        let url = window.URL || window.webkitURL;
+                        let binaryData = [];
+                        binaryData.push(cursor.value.image);
+                        let imageSrc = url.createObjectURL(new Blob(binaryData));
                         words.forEach(function (keyword) {
                             if ((
                                 cursor.value.name.toLowerCase().includes(keyword.toLowerCase()) ||
@@ -153,6 +162,7 @@
                                     + cursor.value.city + "</td><td>"
                                     + cursor.value.postalCode
                                     + "</td><td><button id=\"delButton\" value=\"" + cursor.key + "\">Usuń</button>"
+                                    + "</td><td><image src=\"" + imageSrc+ "\" style='height: 50px; width: 50px;'></image>"
                                     + "</td></tr>";
                                 document.getElementById('delButton').onclick = function (e) {
                                     let idToDelete = parseInt(document.getElementById('delButton').value);
@@ -262,7 +272,12 @@
                 };
                 request.onsuccess = function (event) {
                     cursor = event.target.result;
+
                     if (cursor) {
+                        let url = window.URL || window.webkitURL;
+                        let binaryData = [];
+                        binaryData.push(cursor.value.image);
+                        let imageSrc = url.createObjectURL(new Blob(binaryData));
                         document.getElementById("customers-table-body").innerHTML +=
                             "<tr><td>" + cursor.key + "</td><td>"
                             + cursor.value.name + "</td><td>"
@@ -274,6 +289,7 @@
                             + cursor.value.city + "</td><td>"
                             + cursor.value.postalCode
                             + "</td><td><button id=\"delButton\" value=\"" + cursor.key + "\">Usuń</button>"
+                            + "</td><td><image src=\"" + imageSrc+ "\" style='height: 50px; width: 50px;'></image>"
                             + "</td></tr>";
                         document.getElementById('delButton').onclick = function (e) {
                             let idToDelete = parseInt(document.getElementById('delButton').value);
@@ -330,6 +346,7 @@
             <input required type="text" id="postalCodeInput" pattern="\d{2}-\d{3}">
         </div>
         <button id="generateButton">Wygeneruj dane</button>
+        <button type="submit" id="addButton">Dodaj</button>
     </form>
 </div>
 
@@ -342,7 +359,6 @@
         <input id="filterImage">
     </div>
     <button id="useColorWorker">Użyj workera filtra</button>
-    <button id="addButton">Dodaj rekord ze zdjęciem</button>
 </div>
 
 <div class="form-style-6">
