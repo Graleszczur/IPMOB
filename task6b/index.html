@@ -122,7 +122,7 @@
                 updateTableBody();
             }
 
-            document.getElementById('searchButton').onclick = function (e) {
+            const filterKeywords = (e) => {
                 let word = document.getElementById('searchInput').value;
                 if (word == null) {
                     word = "";
@@ -172,6 +172,7 @@
                     }
                 };
             }
+            document.getElementById('searchInput').addEventListener('input', filterKeywords);
 
             function randomString(arr) {
                 let randomIndex = Math.floor(Math.random() * arr.length);
@@ -275,7 +276,6 @@
 <div class="form-style-6">
     <label for="IDInput">Wyszukiwarka </label>
     <input id="searchInput">
-    <button id="searchButton">Wyszukaj</button>
 </div>
 
 
