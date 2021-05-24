@@ -128,6 +128,7 @@
                     word = "";
                 }
                 let words = word.split(' ');
+                console.log(words);
                 document.getElementById("customers-table-body").innerHTML = "";
                 const request = db.transaction("customers").objectStore("customers").openCursor();
                 request.onerror = function (event) {
@@ -166,8 +167,8 @@
                                     updateTableBody();
                                 }
                             }
-                            cursor.continue();
                         });
+                        cursor.continue();
 
                     }
                 };
@@ -274,7 +275,7 @@
 </div>
 
 <div class="form-style-6">
-    <label for="IDInput">Wyszukiwarka </label>
+    <label for="IDInput">Wyszukiwarka (spacja separuje osobne filtry)</label>
     <input id="searchInput">
 </div>
 
