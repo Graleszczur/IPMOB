@@ -2,9 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Faktura</title>
 </head>
 <body>
 
+<script>
+  let tag = document.createElement("h1");
+  let text = document.createTextNode("Faktura");
+  tag.appendChild(text);
+  let element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+  tag = document.createElement("h3");
+  text = document.createTextNode("Za produkt: ");
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("productName"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h3");
+  text = document.createTextNode("Na kwotę: ");
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("productPrice"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h2");
+  text = document.createTextNode("Dane klienta ");
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("name"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("surname"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("phoneNumber"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("email"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("address"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("city"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+  tag = document.createElement("h4");
+  text = document.createTextNode(localStorage.getItem("postalCode"));
+  tag.appendChild(text);
+  element = document.getElementsByTagName("body")[0];
+  element.appendChild(tag);
+
+
+</script>
 </body>
 </html>

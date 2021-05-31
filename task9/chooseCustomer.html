@@ -130,14 +130,15 @@
             }
         }
 
-        const updateAndPass = (name, surname, phoneNumber, email, address, city, postalCode) => {
-            localStorage.setItem('name', name);
-            localStorage.setItem('surname', surname);
-            localStorage.setItem('phoneNumber', phoneNumber);
-            localStorage.setItem('email', email);
-            localStorage.setItem('address', address);
-            localStorage.setItem('city', city);
-            localStorage.setItem('postalCode', postalCode);
+        const updateAndPass = (data) => {
+            let parsedData = data.split(',');
+            localStorage.setItem('name', parsedData[0]);
+            localStorage.setItem('surname', parsedData[1]);
+            localStorage.setItem('phoneNumber', parsedData[2]);
+            localStorage.setItem('email', parsedData[3]);
+            localStorage.setItem('address', parsedData[4]);
+            localStorage.setItem('city', parsedData[5]);
+            localStorage.setItem('postalCode', parsedData[6]);
             window.location.href = "invoice.html"
         }
 
