@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer</title>
+    <link rel="stylesheet" href="index.css">
+    <script>
+
+        // In the following line, you should include the prefixes of implementations you want to test.
+        window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+        // DON'T use "var indexedDB = ..." if you're not in a function.
+        // Moreover, you may need references to some window.IDB* objects:
+        window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction || {READ_WRITE: "readwrite"}; // This line should only be needed if it is needed to support the object's constants for older browsers
+        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+        // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+        if (!window.indexedDB) {
+            console.log("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.");
+        }
+
+        function initDatabase() {
+            let random = false;
+            let request = window.indexedDB.open("MyTestDatabase", 3);
+            request.onerror = function (event) {
+                console.log("Error occurred during database setup");
+            };
+            request.onsuccess = function (event) {
+                db = event.target.result;
+                db.onerror = function (event) {
+                    console.log("Error has occurred: " + event.target.errorCode);
+                };
+                updateTableBody();
+            };
+
+            request.onupgradeneeded = function (event) {
+                let db = event.target.result;
+                let objectStore = db.createObjectStore("customers", {keyPath: "id", autoIncrement: true});
+                objectStore.createIndex("name", "name", {unique: false});
+                objectStore.createIndex("surname", "surname", {unique: false});
+                objectStore.createIndex("phoneNumber", "phoneNumber", {unique: true});
+                objectStore.createIndex("email", "email", {unique: true});
+                objectStore.createIndex("idNumber", "idNumber", {unique: true});
+                objectStore.createIndex("address", "address", {unique: false});
+                objectStore.createIndex("city", "city", {unique: false});
+                objectStore.createIndex("postalCode", "postalCode", {unique: false});
+                objectStore.transaction.oncomplete = function (event) {
+                };
+            };
+
+            const filterKeywords = (e) => {
+                let word = document.getElementById('searchInput').value;
+                if (word == null) {
+                    word = "";
+                }
+                let words = word.split(' ');
+                console.log(words);
+                document.getElementById("customers-table-body").innerHTML = "";
+                const request = db.transaction("customers").objectStore("customers").openCursor();
+                request.onerror = function (event) {
+                    console.log(event);
+                };
+                request.onsuccess = function (event) {
+                    cursor = event.target.result;
+
+                    if (cursor) {
+                        words.forEach(function (keyword) {
+                            if ((
+                                cursor.value.name.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.surname.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.phoneNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.email.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.idNumber.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.address.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.city.toLowerCase().includes(keyword.toLowerCase()) ||
+                                cursor.value.postalCode.toLowerCase().includes(keyword.toLowerCase()))) {
+                                document.getElementById("customers-table-body").innerHTML +=
+                                    "<tr><td>" + cursor.key + "</td><td>"
+                                    + cursor.value.name + "</td><td>"
+                                    + cursor.value.surname + "</td><td>"
+                                    + cursor.value.phoneNumber + "</td><td>"
+                                    + cursor.value.email + "</td><td>"
+                                    + cursor.value.idNumber + "</td><td>"
+                                    + cursor.value.address + "</td><td>"
+                                    + cursor.value.city + "</td><td>"
+                                    + cursor.value.postalCode
+                                    + "</td><td><button onclick=''>Wybierz</button>"
+                                    + "</td></tr>";
+                            }
+                        });
+                        cursor.continue();
+
+                    }
+                };
+            }
+            document.getElementById('searchInput').addEventListener('input', filterKeywords);
+
+
+            function updateTableBody() {
+                document.getElementById("customers-table-body").innerHTML = "";
+                let request = db.transaction("customers").objectStore("customers").openCursor();
+                request.onerror = function (event) {
+                    console.log(event);
+                };
+                request.onsuccess = function (event) {
+                    cursor = event.target.result;
+                    if (cursor) {
+                        let name = cursor.value.name;
+                        let surname = cursor.value.surname;
+                        let phoneNumber = cursor.value.phoneNumber;
+                        let email = cursor.value.email;
+                        let address = cursor.value.address;
+                        let city = cursor.value.city;
+                        let postalCode = cursor.value.postalCode;
+                        document.getElementById("customers-table-body").innerHTML +=
+                            "<tr><td>" + cursor.key + "</td><td>"
+                            + cursor.value.name + "</td><td>"
+                            + cursor.value.surname + "</td><td>"
+                            + cursor.value.phoneNumber + "</td><td>"
+                            + cursor.value.email + "</td><td>"
+                            + cursor.value.idNumber + "</td><td>"
+                            + cursor.value.address + "</td><td>"
+                            + cursor.value.city + "</td><td>"
+                            + cursor.value.postalCode
+                            + '</td><td><button onclick="updateAndPass(\'' + name + ',' + surname +
+                            ',' + phoneNumber + ',' + email + ',' + address + ',' + city + ',' + postalCode +
+                            '\')">Wybierz</button>'
+                            + "</td></tr>";
+                    }
+                    cursor.continue();
+                }
+            }
+        }
+
+        const updateAndPass = (name, surname, phoneNumber, email, address, city, postalCode) => {
+            localStorage.setItem('name', name);
+            localStorage.setItem('surname', surname);
+            localStorage.setItem('phoneNumber', phoneNumber);
+            localStorage.setItem('email', email);
+            localStorage.setItem('address', address);
+            localStorage.setItem('city', city);
+            localStorage.setItem('postalCode', postalCode);
+            window.location.href = "invoice.html"
+        }
+
+    </script>
+</head>
+<body onload="initDatabase()">
+<div class="form-style-6">
+    <label for="searchInput">Wyszukiwarka (spacja separuje osobne filtry)</label>
+    <input id="searchInput">
+</div>
+
+
+<table id="customers-table" class="styled-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Imię</th>
+        <th>Nazwisko</th>
+        <th>Numer telefonu</th>
+        <th>Email</th>
+        <th>Numer dowodu</th>
+        <th>Adres</th>
+        <th>Miasto</th>
+        <th>Kod pocztowy</th>
+    </tr>
+    </thead>
+    <tbody id="customers-table-body">
+    </tbody>
+</table>
+</body>
+</html>

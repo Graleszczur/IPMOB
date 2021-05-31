@@ -26,7 +26,7 @@
             3.2% Tłuszczu
         </td>
         <td>
-            <button>Wybierz</button>
+            <button onclick="saveProduct('Mleko', '1.99zł')">Wybierz</button>
         </td>
     </tr>
     <tr>
@@ -40,7 +40,7 @@
             82% Tłuszczu
         </td>
         <td>
-            <button>Wybierz</button>
+            <button onclick="saveProduct('Masło', '4.99zł')">Wybierz</button>
         </td>
     </tr>
     <tr>
@@ -54,7 +54,7 @@
             5% Tłuszczu
         </td>
         <td>
-            <button>Wybierz</button>
+            <button onclick="saveProduct('Twaróg', '2.99zł')">Wybierz</button>
         </td>
     </tr>
     <tr>
@@ -68,10 +68,17 @@
             0.1% Tłuszczu
         </td>
         <td>
-            <button>Wybierz</button>
+            <button onclick="saveProduct('Jogurt fit', '0.99zł')">Wybierz</button>
         </td>
     </tr>
     </tbody>
 </table>
+<script>
+    const saveProduct = (name, price) => {
+        localStorage.setItem("productName", name);
+        localStorage.setItem("productPrice", price);
+        window.location.href= "chooseCustomer.html";
+    }
+</script>
 </body>
 </html>
